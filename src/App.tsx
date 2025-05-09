@@ -1,6 +1,5 @@
-
-import Demo from './components/useFetch/demo'
 import './App.css'
+import { Demo } from './components/useLocalStorage/demo'
 
 function App() {
 
