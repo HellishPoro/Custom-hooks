@@ -11,9 +11,8 @@ type UseLocalStorage = (key: string) => [
   },
 ];
 
-export const useLocalStorage: UseLocalStorage =  (key) => {
-    const [value, setValue] = useState <LocalStorageReturnValue>(() => {
-        const storageValue = localStorage.getItem(key);
+function gettingValue (key: string): LocalStorageReturnValue {
+    const storageValue = localStorage.getItem(key);
         try {
             return storageValue ? JSON.parse(storageValue) : null;
         } catch (error) {
@@ -22,7 +21,11 @@ export const useLocalStorage: UseLocalStorage =  (key) => {
             }
             return null;
         }
-    })
+}
+
+
+export const useLocalStorage: UseLocalStorage =  (key) => {
+    const [value, setValue] = useState <LocalStorageReturnValue>(gettingValue(key))
 
     const setItem = (newValue: LocalStorageSetValue) =>{
         if(newValue === undefined) return; 
@@ -38,7 +41,10 @@ export const useLocalStorage: UseLocalStorage =  (key) => {
     }
 
     useEffect(()=>{
-        setValue(localStorage.getItem(key));
+        const resultValue = gettingValue(key);
+        if(resultValue !== value){
+            setValue(resultValue);
+        }
     },[key])
 
     return [value, {setItem, removeItem}];
